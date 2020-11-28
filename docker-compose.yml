@@ -1,8 +1,14 @@
 version: '3'
 services:
-        web:
-                build: .
-                ports: 
-                        - "8080:8080"
-        postgres:
-
+  web:
+    build: ./web
+    ports: 
+      - "8081:8080"
+  db:
+    image: postgres
+    ports:
+      - "5430:5432"
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: password
