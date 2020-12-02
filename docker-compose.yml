@@ -4,7 +4,7 @@ services:
     image: postgrest/postgrest
     environment:
       PGRST_DB_URI: postgres://$DB_USER:$DB_PASSWORD@db:5432/$APP_DB
-      PGRST_DB_SCHEMA: public
+      PGRST_DB_SCHEMA: $DB_SCHEMA
       PGRST_DB_ANON_ROLE: $DB_ANON_ROLE
     depends_on:
       - db
@@ -14,12 +14,14 @@ services:
     image: postgres
     environment:
       POSTGRES_DB: $APP_DB
-      POSTGRES_USER: $DB_USER
-      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_USER: $DB_OWNER
+      POSTGRES_PASSWORD: $DB_OWNER_PASSWORD
     volumes:
       - ./data/initdb.d:/docker-entrypoint-initdb.d
   nginx:
     build: ./nginx
+    depends_on:
+      - postgrest
 volumes:
     pgdata_test:
     pgdata:
