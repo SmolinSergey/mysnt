@@ -21,22 +21,26 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: app_user
+-- Name: users; Type: TABLE; Schema: api; Owner: app_user
 --
 
-CREATE TABLE public.users (
+CREATE SCHEMA api;
+ALTER SCHEMA api OWNER TO app_user;
+
+
+CREATE TABLE api.users (
     users_id integer NOT NULL,
     users_name text NOT NULL
 );
 
 
-ALTER TABLE public.users OWNER TO app_user;
+ALTER TABLE api.users OWNER TO app_user;
 
 --
--- Name: users_users_id_seq; Type: SEQUENCE; Schema: public; Owner: app_user
+-- Name: users_users_id_seq; Type: SEQUENCE; Schema: api; Owner: app_user
 --
 
-CREATE SEQUENCE public.users_users_id_seq
+CREATE SEQUENCE api.users_users_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -45,27 +49,27 @@ CREATE SEQUENCE public.users_users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_users_id_seq OWNER TO app_user;
+ALTER TABLE api.users_users_id_seq OWNER TO app_user;
 
 --
--- Name: users_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: app_user
+-- Name: users_users_id_seq; Type: SEQUENCE OWNED BY; Schema: api; Owner: app_user
 --
 
-ALTER SEQUENCE public.users_users_id_seq OWNED BY public.users.users_id;
-
-
---
--- Name: users users_id; Type: DEFAULT; Schema: public; Owner: app_user
---
-
-ALTER TABLE ONLY public.users ALTER COLUMN users_id SET DEFAULT nextval('public.users_users_id_seq'::regclass);
+ALTER SEQUENCE api.users_users_id_seq OWNED BY api.users.users_id;
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: app_user
+-- Name: users users_id; Type: DEFAULT; Schema: api; Owner: app_user
 --
 
-COPY public.users (users_id, users_name) FROM stdin;
+ALTER TABLE ONLY api.users ALTER COLUMN users_id SET DEFAULT nextval('api.users_users_id_seq'::regclass);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: api; Owner: app_user
+--
+
+COPY api.users (users_id, users_name) FROM stdin;
 1	Sergey
 2	Leonid
 3	Pavel
@@ -75,10 +79,20 @@ COPY public.users (users_id, users_name) FROM stdin;
 
 
 --
--- Name: users_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app_user
+-- Name: users_users_id_seq; Type: SEQUENCE SET; Schema: api; Owner: app_user
 --
 
-SELECT pg_catalog.setval('public.users_users_id_seq', 4, true);
+SELECT pg_catalog.setval('api.users_users_id_seq', 5, true);
+
+
+create role web_anon nologin;
+
+grant usage on schema api to web_anon;
+grant select on api.users to web_anon;
+
+
+create role authenticator noinherit login password 'BBmcmqRPip5s35R1Ifm6lx5qHfIWXBYM';
+grant web_anon to authenticator;
 
 
 --
